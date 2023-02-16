@@ -83,7 +83,8 @@ module InvisibleCaptcha
         # If honeypot is defined for this controller-action, search for:
         # - honeypot: params[:subtitle]
         # - honeypot with scope: params[:topic][:subtitle]
-        if params[honeypot].present? || (params[scope] && params[scope][honeypot].present?)
+        # - an alternate faulty form of honeypot with scope
+        if params[honeypot].present? || params.dig(scope, honeypot).present? || params["#{scope}[#{honeypot}]"].present?
           warn_spam("Invisible Captcha honeypot param '#{honeypot}' was present.")
           return true
         else
